@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const app = express();
 const port = 3000;
@@ -11,7 +12,7 @@ app.use(express.json());
 const Employee = require("./model/employee");
 
 mongoose.connect(
-  "mongodb+srv://youssefm:6ENb1zVVmhJeyATf@employee-system.ocuwita.mongodb.net/?retryWrites=true&w=majority",
+  process.env.MONGODB_URI,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -31,8 +32,6 @@ mongoose.connect(
 app.post("/verifyHRUser", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-
-  console.log(email, password);
 
   try {
     const user = await Employee.findOne({ email }).exec();
