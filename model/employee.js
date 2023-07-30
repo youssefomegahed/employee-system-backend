@@ -7,6 +7,12 @@ const employeeSchema = new Schema({
   email: String,
   password: String,
   group: String,
+  attendance: [
+    {
+      date: String,
+      status: String,
+    },
+  ],
 });
 
 const Employee = model("Employee", employeeSchema);
