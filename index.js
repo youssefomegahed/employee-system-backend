@@ -50,3 +50,35 @@ app.post("/verifyHRUser", async (req, res) => {
 app.listen(port, () => {
   console.log(`Listening at port ${port}`);
 });
+
+app.post("/addEmployee", async (req, res) => {
+  const name = req.body.name;
+  const email = req.body.email;
+  const password = req.body.password;
+  const group = req.body.group;
+  const attendance = req.body.attendance;
+
+  // verifying email is unique
+  const userExists = await Employee.findOne({ email }).exec();
+
+  if (userExists) {
+    return res.json(false);
+  }
+
+  try {
+    const employee = new Employee({
+      name,
+      email,
+      password,
+      group,
+      attendance,
+    });
+
+    await employee.save();
+
+    return res.json(employee);
+  } catch (err) {
+    console.error("Error adding employee:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
