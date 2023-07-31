@@ -47,16 +47,23 @@ app.post("/verifyHRUser", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Listening at port ${port}`);
-});
+app.post("/getEmployees"),
+  async (req, res) => {
+    try {
+      const employees = await Employee.find({}).exec();
+      return res.json(employees);
+    } catch (err) {
+      console.error("Error getting employees:", err);
+      return res.json(false);
+    }
+  };
 
 app.post("/addEmployee", async (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
   const group = req.body.group;
-  const attendance = req.body.attendance;
+  const attendance = [];
 
   // verifying email is unique
   const userExists = await Employee.findOne({ email }).exec();
@@ -81,4 +88,8 @@ app.post("/addEmployee", async (req, res) => {
     console.error("Error adding employee:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
+});
+
+app.listen(port, () => {
+  console.log(`Listening at port ${port}`);
 });
