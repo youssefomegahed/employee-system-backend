@@ -47,16 +47,15 @@ app.post("/verifyHRUser", async (req, res) => {
   }
 });
 
-app.post("/getEmployees"),
-  async (req, res) => {
-    try {
-      const employees = await Employee.find({}).exec();
-      return res.json(employees);
-    } catch (err) {
-      console.error("Error getting employees:", err);
-      return res.json(false);
-    }
-  };
+app.get("/getEmployees", async (req, res) => {
+  try {
+    const employees = await Employee.find({}).exec();
+    return res.json(employees);
+  } catch (err) {
+    console.error("Error getting employees:", err);
+    return res.json(false);
+  }
+});
 
 app.post("/addEmployee", async (req, res) => {
   const name = req.body.name;
