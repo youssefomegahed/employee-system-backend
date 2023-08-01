@@ -36,7 +36,11 @@ app.post("/verifyHRUser", async (req, res) => {
   try {
     const user = await Employee.findOne({ email }).exec();
 
-    if (!user || user.group !== "HR" || user.password !== password) {
+    if (
+      !user ||
+      user.group.toLowerCase() !== "hr" ||
+      user.password !== password
+    ) {
       return res.json(false);
     }
 
@@ -86,6 +90,45 @@ app.post("/addEmployee", async (req, res) => {
   } catch (err) {
     console.error("Error adding employee:", err);
     return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/updateEmployees", async (req, res) => {
+  const employees = req.body.employees;
+
+  try {
+    for (let i = 0; i < employees.length; i++) {
+      const employee = employees[i];
+      const employeeId = employee._id;
+      const name = employee.name;
+      const email = employee.email;
+      const password = employee.password;
+      const group = employee.group;
+      const attendance = employee.attendance;
+
+      await Employee.findByIdAndUpdate(employeeId, {
+        name,
+        email,
+        password,
+        group,
+        attendance,
+      });
+    }
+  } catch (err) {
+    console.error("Error updating employees:", err);
+    return res.json(false);
+  }
+});
+
+app.post("/deleteEmployee", async (req, res) => {
+  const employeeId = req.body.employeeId;
+
+  try {
+    await Employee.findByIdAndDelete(employeeId);
+    return res.json(true);
+  } catch (err) {
+    console.error("Error deleting employee:", err);
+    return res.json(false);
   }
 });
 
